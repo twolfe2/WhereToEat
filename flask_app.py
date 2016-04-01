@@ -35,7 +35,8 @@ def get_yelp(name):
     #places['businesses'][0]['name'] gets the first business name
     results = {
         'name': places['businesses'][0]['name'],
-        'url': places['businesses'][0]['url']
+        'url': places['businesses'][0]['url'],
+        'image': places['businesses'][0]['rating_img_url_large']
     }
     return results
 
