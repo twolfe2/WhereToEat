@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request,jsonify
 from flask_bootstrap import Bootstrap
 from yelpapi import YelpAPI as yelpApi
 
@@ -10,14 +10,12 @@ tripAdvisor = {}
 
 
 
+
+
+
 @app.route('/')
-def hello_world():
-    return 'Hello World!'
-
-
-@app.route('/welcome')
 def welcome():
-    return render_template('index.html')
+    return render_template('welcome.html')
 
 @app.route('/cityInfo', methods=['POST'])
 def get_city_name():
