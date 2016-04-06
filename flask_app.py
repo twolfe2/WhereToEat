@@ -1,9 +1,12 @@
-from flask import Flask, render_template, request,jsonify
+from flask import Flask, render_template, request,jsonify,send_file
 from flask_bootstrap import Bootstrap
 from yelpapi import YelpAPI as yelpApi
 
 
+
 app = Flask(__name__)
+
+
 yelp = {}
 tripAdvisor = {}
 
@@ -14,15 +17,15 @@ tripAdvisor = {}
 
 
 @app.route('/')
-def welcome():
-    return render_template('welcome.html')
+def index():
+    return send_file('templates/index.html')
 
-@app.route('/cityInfo', methods=['POST'])
+
+@app.route('/#/cityInfo', methods=['POST'])
 def get_city_name():
     name = request.form['text']
-
     yelp = get_yelp(name)
-    return render_template('city.html', name = name, yelp = yelp)
+    return render_template('/#/cityInfo.html', name = name, yelp = yelp)
 
 def get_yelp(name):
     tokens = get_tokens()
@@ -54,4 +57,4 @@ def get_tokens():
         return tokens
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)

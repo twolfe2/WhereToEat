@@ -1,8 +1,50 @@
 <!DOCTYPE html>
-<html>
-    <body>
-    <a href="{{ url_for('welcome') }}">When</a>
-    </body>
+<html lang="en" ng-app="myApp">
+<head>
+    <!-- Load AngularJS -->
+    <script src="https://code.angularjs.org/1.5.3/angular.min.js"></script>
+    <script src="https://code.angularjs.org/1.5.3/angular-route.min.js"></script>
+    <script src="https://code.angularjs.org/1.5.3/angular-resource.min.js"></script>
+
+    <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?libraries=places&sensor=false"></script>
+
+
+    <script src="static/js/ngAutocomplete.js"></script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+    <link href="static/css/bootstrap.min.css" rel="stylesheet" media="screen">
+
+    <script src="/static/js/app.js"></script>
+</head>
+
+
+<body>
+
+<div ng-view="/#/"></div>
+
+<nav class="navbar navbar-inverse navbar-default navbar-fixed-top">
+    <div class="container">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <a class="navbar-brand" href="/#/">Brand</a>
+        </div>
+        <form class="navbar-form navbar-left" role="search" action="/" method="POST">
+            <div class="form-group">
+                <div ng-controller="TestCtrl">
+                    <form id="form" role="form">
+                        <div class="form-group move-down">
+                            <input type="text" id="Autocomplete" class="form-control" ng-autocomplete="result1"
+                                   details="details1" options="options1" placeholder="Enter City Name"/>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+            <input type="submit" class="btn btn-default"></input>
+        </form>
+    </div>
+</nav>
+</body>
 
 
 </html>
