@@ -1,31 +1,43 @@
 from flask import Flask, render_template, request,jsonify,send_file
-from flask_bootstrap import Bootstrap
+# from flask_bootstrap import Bootstrap
 from yelpapi import YelpAPI as yelpApi
+#from flask.ext.triangle import Triangle
 
 
 
 app = Flask(__name__)
+#Triangle(app)
 
 
 yelp = {}
 tripAdvisor = {}
+city_name = " "
 
 
 
 
 
 
-
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def index():
-    return send_file('templates/index.html')
+    return send_file("templates/index.html")
 
 
 @app.route('/#/cityInfo', methods=['POST'])
 def get_city_name():
-    name = request.form['text']
-    yelp = get_yelp(name)
-    return render_template('/#/cityInfo.html', name = name, yelp = yelp)
+    city_name = request.form['text']
+    # yelp = get_yelp(name)
+    #return jsonify({'cityInfo': yelp})
+    return
+
+@app.route('/#/cityInfo', methods=['GET'])
+def city_info():
+    yelp = get_yelp(city_name)
+    return jsonify({'cityInfo': yelp})
+
+
+
+
 
 def get_yelp(name):
     tokens = get_tokens()
@@ -39,7 +51,7 @@ def get_yelp(name):
         'url': places['businesses'][0]['url'],
         'image': places['businesses'][0]['rating_img_url_large']
     }
-    return results
+    return jsonify(results)
 
 def get_trip(name):
     return 'working'
