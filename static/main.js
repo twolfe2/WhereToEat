@@ -1,5 +1,15 @@
 $(document).ready(function() {
 
+
+
+    function show() {
+    $('#loading').hide();
+    $('#container').fadeIn();
+};
+
+setTimeout(show, 5000);
+
+
     $('#new-city').hide();
 
     $('form').on('submit', function() {
