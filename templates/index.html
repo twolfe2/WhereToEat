@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
       <script src={{ url_for('static', filename='index.css') }}></script>
+      <link rel="stylesheet" href="/static/easy-autocomplete.min.css">
+
   </head>
   <body>
     <div class="container">
@@ -13,7 +15,7 @@
         <br>
         <form role="form" method="post" onsubmit="return false;">
             <div class="form-group">
-                <input type="text" class="form-control" name="city" placeholder="Enter a city" required>
+                <input type="text" class="form-control" name="city" id="geocomplete" placeholder="Enter a city" required>
             </div>
             <button type="submit" class="btn btn-primary" id="submit">Submit!</button>
             <button type="submit" class="btn btn-success" id="new-city">Search for another city</button>
@@ -24,7 +26,7 @@
             <div class="row">
               <div class="col-sm-12 col-md-12">
                 <div class="thumbnail">
-                  <img src="..." alt="...">
+                  <img src="#" alt="...">
                   <div class="caption">
                     <h3>Thumbnail label</h3>
                     <p>...</p>
@@ -39,6 +41,13 @@
     </div>
     <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+
     <script src={{ url_for('static', filename='main.js') }}></script>
+     <script src="/static/jquery.easy-autocomplete.min.js"></script>
+    <script src="http://maps.googleapis.com/maps/api/js?sensor=false&amp;libraries=places"></script>
+  <script src={{ url_for('static', filename='jquery.geocomplete.js') }}></script>
+
+
+
   </body>
 </html>

@@ -7,10 +7,25 @@ $(document).ready(function() {
     $('#container').fadeIn();
 };
 
+
 setTimeout(show, 5000);
 
+//
+//var options = {
+//	data: ["blue", "green", "pink", "red", "yellow"]
+//};
+//
+//$("#basics").easyAutocomplete(options);
+//
+$('#new-city').hide();
 
-    $('#new-city').hide();
+$(function(){
+3
+$("#geocomplete").geocomplete()
+4
+});
+
+
 
     $('form').on('submit', function() {
 
