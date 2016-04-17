@@ -1,35 +1,23 @@
 $(document).ready(function () {
 
 
-    function show() {
 
-        $('.container').fadeIn();
-    };
-
-
-    setTimeout(show, 50000);
 
     $('#results').hide();
-
-//var options = {
-//	data: ["blue", "green", "pink", "red", "yellow"]
-//};
-//
-//$("#basics").easyAutocomplete(options);
-//
+    $('#loading').hide();
     $('#new-city').hide();
 
     $(function () {
-        3
-        $("#geocomplete").geocomplete()
-        4
-    });
 
+        $("#geocomplete").geocomplete()
+
+    });
 
     $('form').on('submit', function () {
 
         userInput = $('input[name="city"]').val();
         console.log(userInput)
+        $('#loading').show();
 
         $.ajax({
             type: "POST",
@@ -56,6 +44,7 @@ $(document).ready(function () {
 
                     //      $('#results').html('<a href="'+results.url+'">'+results.name+
                     //'</a><br><img src="'+results.image+'" >')
+                    $('#loading').hide();
                     $('#results').show();
 
                 } else {
