@@ -1,10 +1,10 @@
-import time
-import requests
-import requests_cache
-
 from flask import Flask, render_template, request, jsonify
 from yelpapi import YelpAPI as yelpApi
 app = Flask(__name__)
+import urllib.request
+
+import requests
+from bs4 import BeautifulSoup
 
 
 
@@ -47,6 +47,38 @@ def get_tokens():
             if line[0] != '#': # Not a comment line
                 tokens.append(line.rstrip('\n'))
         return tokens
+
+def get_trip(city):
+    restaurantList=[]
+    base = 'https://www.tripadvisor.com/'
+
+    #get the webpage
+    cityR = urllib.request.urlopen(base+city).read()
+    #soupify webpage
+    citySoup = BeautifulSoup(cityR)
+
+    restaurants = citySoup.find_all("div", class_ = "name")
+
+    #if not taken directly to tourist page do this
+    if (not restaurants):
+        info = citySoup.find_all("a", class_="subLink")
+        cityLink = info[0].get('href')
+        #get the tourist page
+        cityR = urllib.request.urlopen(base+cityLink).read()
+        citySoup = BeautifulSoup(cityR)
+        restaurants = citySoup.find_all("div", class_ = "col restaurants")
+        restaurants = restaurants[0].find_all("div", class_="name")
+        #print(restaurants)
+
+    #get the top 3 restaurants names
+    for i in range(0,3):
+        restaurantList.append(restaurants[i].get_text().replace('\n',''))
+
+
+    return restaurantList
+
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)
