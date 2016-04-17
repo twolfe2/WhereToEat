@@ -2,6 +2,8 @@
 <html>
 <head>
     <title>WhereToEat</title>
+    <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script src={{ url_for('static', filename='jquery.geocomplete.js') }}></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
           integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
@@ -17,9 +19,12 @@
         <form role="form" method="post" onsubmit="return false;">
             <div class="input-group">
                 <input type="text" class="form-control" name="city" id="geocomplete" placeholder="Enter a city"
-                       required>
+                        onkeydown = "if (event.keyCode == 13)
+                                        document.getElementById('submit').click()" required>
                 <span class="input-group-btn">
-                <button type="submit" class="btn btn-primary" id="submit">Search!</button>
+                <button type="submit" class="btn btn-primary" id="submit">Search! <span id="loading"
+                                                                                        class="glyphicon glyphicon-refresh spinning"></span>
+                </button>
                 </span>
             </div>
         </form>
@@ -29,7 +34,7 @@
     </div>
     <div id="results">
         <div class="row">
-            <div class="col-md-offset-4 col-sm-6 col-md-4">
+            <div class="col-md-offset-4 col-md-4">
                 <div class="thumbnail">
                     <img src="#" alt="Image not found" id="restImg" class="voffset2">
                     <div class="caption">
@@ -49,7 +54,7 @@
 
     </div>
 </div>
-<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"
         integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS"
         crossorigin="anonymous"></script>
@@ -57,7 +62,7 @@
 <script src={{ url_for('static', filename='main.js') }}></script>
 <script src="/static/jquery.easy-autocomplete.min.js"></script>
 <script src="http://maps.googleapis.com/maps/api/js?sensor=false&amp;libraries=places"></script>
-<script src={{ url_for('static', filename='jquery.geocomplete.js') }}></script>
+
 
 
 </body>

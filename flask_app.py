@@ -18,7 +18,6 @@ def home():
         bestRest = get_best(city)
         # cityInfo = get_yelp(city)
 
-
         # print(bestRest)
         return jsonify(bestRest)
     return render_template("index.html")
@@ -28,10 +27,8 @@ def get_yelp(name, cityName):
     tokens = get_tokens()
     # setup api access
     yelp_api = yelpApi(tokens[0], tokens[1], tokens[2], tokens[3])
-
     places = yelp_api.search_query(term=name, location=cityName, limit=1)
-    # print(places)
-    # places['businesses'][0]['name'] gets the first business name
+
     results = {
         'name': places['businesses'][0]['name'],
         'url': places['businesses'][0]['url'],
@@ -55,15 +52,21 @@ def get_yelp_back(city):
     yelp_api = yelpApi(tokens[0], tokens[1], tokens[2], tokens[3])
 
     places = yelp_api.search_query(category_filter='restaurants', location=city, limit=2, sort=2)
-    # places['businesses'][0]['name'] gets the first business name
+
     results = {
         'name': places['businesses'][0]['name'],
         'url': places['businesses'][0]['url'],
         'image': places['businesses'][0]['rating_img_url_large']
     }
+    try:
+        places['businesses'][0]['display_phone']
+    except KeyError:
+        results['phone'] = "false"
+    else:
+        results['phone'] = places['businesses'][0]['display_phone']
     return results
 
-
+#used for yelp api
 def get_tokens():
     tokens = []
     # Order: Consumer Key, Consumer Secret, Token, Token Secret
@@ -73,7 +76,7 @@ def get_tokens():
                 tokens.append(line.rstrip('\n'))
         return tokens
 
-
+#tripadvisor scraper
 def get_trip(cityName):
     # https://www.tripadvisor.com/St.%20Louis,%20MO,%20United%20States
     cityName = cityName.replace(" ", "%20")
@@ -108,9 +111,9 @@ def get_trip(cityName):
 
 
 def get_best(city):
-    # print(city)
+
     tripList = get_trip(city)
-    # print(tripList)
+
     yelpInfo = []
     bestRest = ''
     tempMax = 0.0
