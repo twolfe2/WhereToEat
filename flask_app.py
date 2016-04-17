@@ -9,33 +9,37 @@ from bs4 import BeautifulSoup
 
 
 
+
 @app.route('/', methods=['GET', 'POST'])
 def home():
     if request.method == 'POST':
         #user input
         city = request.form.get('city')
-        #get yelp info
-        cityInfo = get_yelp(city)
 
-        print(cityInfo)
-        return jsonify(cityInfo)
+        #get yelp info
+        bestRest = get_best(city)
+        #cityInfo = get_yelp(city)
+
+
+        print(bestRest)
+        return jsonify(bestRest)
     return render_template("index.html")
 
 
 
-
-
-def get_yelp(name):
+def get_yelp(name,cityName):
     tokens = get_tokens()
     #setup api access
     yelp_api = yelpApi(tokens[0], tokens[1],tokens[2],tokens[3])
 
-    places = yelp_api.search_query(category_filter='restaurants', location = name, limit = 2, sort = 2)
+    places = yelp_api.search_query(term=name,location = cityName, limit = 1)
+    #print(places)
     #places['businesses'][0]['name'] gets the first business name
     results = {
         'name': places['businesses'][0]['name'],
         'url': places['businesses'][0]['url'],
-        'image': places['businesses'][0]['rating_img_url_large']
+        'image': places['businesses'][0]['image_url'],
+        'rating': places['businesses'][0]['rating']
     }
     return results
 
@@ -48,27 +52,31 @@ def get_tokens():
                 tokens.append(line.rstrip('\n'))
         return tokens
 
-def get_trip(city):
+def get_trip(cityName):
+        #https://www.tripadvisor.com/St.%20Louis,%20MO,%20United%20States
+    cityName = cityName.replace(" ","%20")
     restaurantList=[]
     base = 'https://www.tripadvisor.com/'
 
     #get the webpage
-    cityR = urllib.request.urlopen(base+city).read()
+    cityR = urllib.request.urlopen(base+cityName).read()
+
     #soupify webpage
     citySoup = BeautifulSoup(cityR)
+    #navigate to tourist page
+    info = citySoup.find_all("a", class_="subLink")
 
-    restaurants = citySoup.find_all("div", class_ = "name")
+    cityLink = info[0].get('href')
 
-    #if not taken directly to tourist page do this
-    if (not restaurants):
-        info = citySoup.find_all("a", class_="subLink")
-        cityLink = info[0].get('href')
-        #get the tourist page
-        cityR = urllib.request.urlopen(base+cityLink).read()
-        citySoup = BeautifulSoup(cityR)
-        restaurants = citySoup.find_all("div", class_ = "col restaurants")
-        restaurants = restaurants[0].find_all("div", class_="name")
-        #print(restaurants)
+    #get the tourist page
+    cityR = urllib.request.urlopen(base+cityLink).read()
+    citySoup = BeautifulSoup(cityR)
+    #get the restaurants
+    restaurants = citySoup.find_all("div", class_ = "col restaurants")
+    restaurants = restaurants[0].find_all("div", class_="name")
+    #check again to make sure restaurants is not empty
+    if(not restaurants):
+        return
 
     #get the top 3 restaurants names
     for i in range(0,3):
@@ -77,7 +85,26 @@ def get_trip(city):
 
     return restaurantList
 
+def get_best(city):
+    print(city)
+    tripList = get_trip(city)
+    print(tripList)
+    yelpInfo = []
+    bestRest = ''
+    tempMax = 0.0
 
+    #get yelp info about restaurants
+    for place in tripList:
+        yelpInfo.append(get_yelp(place,city))
+
+    #compare the restaurants
+    for place in yelpInfo:
+
+        if(place['rating'] > tempMax):
+            bestRest = place
+            tempMax = place['rating']
+
+    return bestRest
 
 
 if __name__ == '__main__':
