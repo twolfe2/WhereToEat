@@ -56,7 +56,7 @@ def get_yelp_back(city):
     results = {
         'name': places['businesses'][0]['name'],
         'url': places['businesses'][0]['url'],
-        'image': places['businesses'][0]['rating_img_url_large']
+        'image': places['businesses'][0]['image_url']
     }
     try:
         places['businesses'][0]['display_phone']
@@ -84,7 +84,11 @@ def get_trip(cityName):
     base = 'https://www.tripadvisor.com/'
 
     # get the webpage
-    cityR = urllib.request.urlopen(base + cityName).read()
+    try:
+        cityR = urllib.request.urlopen(base + cityName).read()
+    except urllib.error.HTTPError:
+        return []
+
 
     # soupify webpage
     citySoup = BeautifulSoup(cityR)
@@ -94,14 +98,19 @@ def get_trip(cityName):
     cityLink = info[0].get('href')
 
     # get the tourist page
-    cityR = urllib.request.urlopen(base + cityLink).read()
+    try:
+        cityR = urllib.request.urlopen(base + cityLink).read()
+    except urllib.error.HTTPError:
+        return []
+
     citySoup = BeautifulSoup(cityR)
     # get the restaurants
     restaurants = citySoup.find_all("div", class_="col restaurants")
     restaurants = restaurants[0].find_all("div", class_="name")
     # check again to make sure restaurants is not empty
+    #print(not restaurants)
     if (not restaurants):
-        return
+        return []
 
         # get the top 3 restaurants names
     for i in range(0, 3):
@@ -113,7 +122,7 @@ def get_trip(cityName):
 def get_best(city):
 
     tripList = get_trip(city)
-
+    #print(not tripList)
     yelpInfo = []
     bestRest = ''
     tempMax = 0.0
