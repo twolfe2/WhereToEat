@@ -1,3 +1,3 @@
 # WhereToEat
 
-[See it in action](twolfe2.pythonanywhere.com)
+[See it in action](http://twolfe2.pythonanywhere.com/)
