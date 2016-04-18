@@ -23,58 +23,30 @@ def home():
     return render_template("index.html")
 
 
-def get_yelp(name, cityName):
-    tokens = get_tokens()
-    # setup api access
-    yelp_api = yelpApi(tokens[0], tokens[1], tokens[2], tokens[3])
-    places = yelp_api.search_query(term=name, location=cityName, limit=1)
 
-    results = {
-        'name': places['businesses'][0]['name'],
-        'url': places['businesses'][0]['url'],
-        'image': places['businesses'][0]['image_url'],
-        'rating': places['businesses'][0]['rating'],
+#get the best restaurant for the city
+def get_best(city):
 
-    }
-    # if no phone number set to false
-    try:
-        places['businesses'][0]['display_phone']
-    except KeyError:
-        results['phone'] = "false"
-    else:
-        results['phone'] = places['businesses'][0]['display_phone']
-    return results
+    tripList = get_trip(city)
+    #print(not tripList)
+    yelpInfo = []
+    bestRest = ''
+    tempMax = 0.0
+    if (not tripList):
+        return get_yelp_back(city)
+    # get yelp info about restaurants
+    for place in tripList:
+        yelpInfo.append(get_yelp(place, city))
 
+    # compare the restaurants
+    for place in yelpInfo:
 
-# this is used if tripadvisor returns no results
-def get_yelp_back(city):
-    tokens = get_tokens()  # setup api access
-    yelp_api = yelpApi(tokens[0], tokens[1], tokens[2], tokens[3])
+        if (place['rating'] > tempMax):
+            bestRest = place
+            tempMax = place['rating']
 
-    places = yelp_api.search_query(category_filter='restaurants', location=city, limit=2, sort=2)
+    return bestRest
 
-    results = {
-        'name': places['businesses'][0]['name'],
-        'url': places['businesses'][0]['url'],
-        'image': places['businesses'][0]['image_url']
-    }
-    try:
-        places['businesses'][0]['display_phone']
-    except KeyError:
-        results['phone'] = "false"
-    else:
-        results['phone'] = places['businesses'][0]['display_phone']
-    return results
-
-#used for yelp api
-def get_tokens():
-    tokens = []
-    # Order: Consumer Key, Consumer Secret, Token, Token Secret
-    with open("static/yelp.cred", 'r') as fin:
-        for line in fin:
-            if line[0] != '#':  # Not a comment line
-                tokens.append(line.rstrip('\n'))
-        return tokens
 
 #tripadvisor scraper
 def get_trip(cityName):
@@ -86,6 +58,7 @@ def get_trip(cityName):
     # get the webpage
     try:
         cityR = urllib.request.urlopen(base + cityName).read()
+    #if fails return an empty list
     except urllib.error.HTTPError:
         return []
 
@@ -118,28 +91,63 @@ def get_trip(cityName):
 
     return restaurantList
 
+#get the yelp info for each restaurant
+def get_yelp(name, cityName):
+    tokens = get_tokens()
+    # setup api access
+    yelp_api = yelpApi(tokens[0], tokens[1], tokens[2], tokens[3])
+    places = yelp_api.search_query(term=name, location=cityName, limit=1)
 
-def get_best(city):
+    results = {
+        'name': places['businesses'][0]['name'],
+        'url': places['businesses'][0]['url'],
+        'image': places['businesses'][0]['image_url'],
+        'rating': places['businesses'][0]['rating'],
 
-    tripList = get_trip(city)
-    #print(not tripList)
-    yelpInfo = []
-    bestRest = ''
-    tempMax = 0.0
-    if (not tripList):
-        return get_yelp_back(city)
-    # get yelp info about restaurants
-    for place in tripList:
-        yelpInfo.append(get_yelp(place, city))
+    }
+    # if no phone number set to false
+    try:
+        places['businesses'][0]['display_phone']
+    except KeyError:
+        results['phone'] = "false"
+    else:
+        results['phone'] = places['businesses'][0]['display_phone']
+    return results
 
-    # compare the restaurants
-    for place in yelpInfo:
 
-        if (place['rating'] > tempMax):
-            bestRest = place
-            tempMax = place['rating']
+# this is used if get_trip() returns no results
+def get_yelp_back(city):
+    tokens = get_tokens()  # setup api access
+    yelp_api = yelpApi(tokens[0], tokens[1], tokens[2], tokens[3])
 
-    return bestRest
+    places = yelp_api.search_query(category_filter='restaurants', location=city, limit=2, sort=2)
+
+    results = {
+        'name': places['businesses'][0]['name'],
+        'url': places['businesses'][0]['url'],
+        'image': places['businesses'][0]['image_url']
+    }
+    try:
+        places['businesses'][0]['display_phone']
+    except KeyError:
+        results['phone'] = "false"
+    else:
+        results['phone'] = places['businesses'][0]['display_phone']
+    return results
+
+#used for yelp api
+def get_tokens():
+    tokens = []
+    # Order: Consumer Key, Consumer Secret, Token, Token Secret
+    with open("static/yelp.cred", 'r') as fin:
+        for line in fin:
+            if line[0] != '#':  # Not a comment line
+                tokens.append(line.rstrip('\n'))
+        return tokens
+
+
+
+
 
 
 if __name__ == '__main__':
