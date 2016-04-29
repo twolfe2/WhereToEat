@@ -41,7 +41,8 @@ def get_best(city):
     # compare the restaurants
     for place in yelpInfo:
 
-        if (place['rating'] > tempMax):
+        if ((place['rating'] > tempMax and place['numReviews'] > 10) or
+                ((place['rating']+1)>tempMax and place['numReviews'] > bestRest['numReviews'])):
             bestRest = place
             tempMax = place['rating']
 
@@ -103,7 +104,7 @@ def get_yelp(name, cityName):
         'url': places['businesses'][0]['url'],
         'image': places['businesses'][0]['image_url'],
         'rating': places['businesses'][0]['rating'],
-
+        'numReviews': places['businesses'][0]['review_count']
     }
     # if no phone number set to false
     try:
